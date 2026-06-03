@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>2026.06.06 6:6:6</title>
   <style>
     :root {
@@ -23,7 +23,7 @@
 
     html,
     body {
-      height: 100%;
+      min-height: 100%;
       margin: 0;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -32,10 +32,21 @@
     }
 
     body {
+      min-height: 100vh;
+      min-height: 100dvh;
       display: grid;
       place-items: center;
       padding: 2.4vw;
+      padding:
+        max(2.4vw, env(safe-area-inset-top))
+        max(2.4vw, env(safe-area-inset-right))
+        max(2.4vw, env(safe-area-inset-bottom))
+        max(2.4vw, env(safe-area-inset-left));
       text-align: center;
+    }
+
+    body.immersive {
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     }
 
     body::before {
@@ -286,6 +297,7 @@
       z-index: 2;
       width: 100%;
       min-height: min(780px, 92vh);
+      min-height: min(780px, 92dvh);
       display: grid;
       grid-template-rows: repeat(4, auto);
       align-content: space-evenly;
@@ -518,6 +530,34 @@
       transform: translateX(-50%);
     }
 
+    .fullscreen-button {
+      position: fixed;
+      right: max(14px, env(safe-area-inset-right));
+      top: max(14px, env(safe-area-inset-top));
+      z-index: 7;
+      min-width: 48px;
+      height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.34);
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 10px 32px var(--shadow);
+      backdrop-filter: blur(12px);
+      transition: opacity 320ms ease, background 700ms ease, border-color 700ms ease, color 700ms ease;
+    }
+
+    body.immersive .fullscreen-button {
+      opacity: 0.34;
+    }
+
+    body.immersive .fullscreen-button:focus,
+    body.immersive .fullscreen-button:hover {
+      opacity: 1;
+    }
+
     .style-button {
       width: 44px;
       height: 44px;
@@ -683,12 +723,19 @@
 
     @media (max-width: 680px) {
       body {
-        padding: 22px;
+        padding:
+          max(12px, env(safe-area-inset-top))
+          max(12px, env(safe-area-inset-right))
+          max(12px, env(safe-area-inset-bottom))
+          max(12px, env(safe-area-inset-left));
       }
 
       main {
-        min-height: 92vh;
-        gap: 24px;
+        min-height: 100vh;
+        min-height: 100dvh;
+        gap: clamp(8px, 1.6dvh, 18px);
+        padding-top: 42px;
+        padding-bottom: 46px;
       }
 
       .countdown {
@@ -696,19 +743,36 @@
       }
 
       .headline {
-        font-size: clamp(48px, 15vw, 86px);
+        font-size: clamp(40px, 13.2vw, 78px);
       }
 
       .current-moment {
-        font-size: clamp(22px, 6.8vw, 42px);
+        font-size: clamp(20px, 6.2vw, 38px);
       }
 
       .countdown-title {
-        font-size: clamp(30px, 7.8vw, 48px);
+        font-size: clamp(25px, 7vw, 42px);
+      }
+
+      .unit {
+        min-height: clamp(96px, 18dvh, 148px);
+        padding: 14px 8px;
+      }
+
+      .number {
+        font-size: clamp(44px, 14vw, 74px);
+      }
+
+      .label {
+        margin-top: 8px;
+        font-size: clamp(18px, 5vw, 28px);
       }
 
       .style-controls {
-        bottom: 12px;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        gap: 8px;
+        transform: translateX(-50%) scale(0.86);
+        transform-origin: bottom center;
       }
 
       .moon {
@@ -716,6 +780,32 @@
         width: 92vw;
         top: -218px;
         right: -218px;
+      }
+
+      body.immersive main {
+        padding-top: 18px;
+      }
+    }
+
+    @media (max-width: 430px) and (orientation: portrait) {
+      .headline {
+        font-size: clamp(34px, 12.4vw, 58px);
+      }
+
+      .countdown {
+        gap: 10px;
+      }
+
+      .unit {
+        min-height: clamp(82px, 16dvh, 120px);
+      }
+
+      .number {
+        font-size: clamp(38px, 13vw, 62px);
+      }
+
+      .label {
+        font-size: clamp(16px, 4.8vw, 24px);
       }
     }
   </style>
@@ -749,6 +839,7 @@
     <div class="dots" id="styleDots"></div>
     <button class="style-button" type="button" id="nextStyle" aria-label="下一个样式">&rsaquo;</button>
   </nav>
+  <button class="fullscreen-button" type="button" id="fullscreenButton" aria-label="全屏显示" title="全屏显示">⛶</button>
 
   <script>
     const TEST_MODE = false;
@@ -771,6 +862,7 @@
     const prevStyleEl = document.getElementById("prevStyle");
     const nextStyleEl = document.getElementById("nextStyle");
     const styleDotsEl = document.getElementById("styleDots");
+    const fullscreenButtonEl = document.getElementById("fullscreenButton");
 
     const colors = ["#f3c969", "#5fd0a5", "#ef6f61", "#7eb6ff", "#f6f1e8"];
     for (let i = 0; i < 84; i += 1) {
@@ -885,9 +977,9 @@
     }
 
     function fitMomentText() {
-      const availableWidth = Math.max(260, Math.floor(window.innerWidth * 0.95));
+      const availableWidth = Math.max(260, Math.floor(window.innerWidth * (window.innerWidth <= 680 ? 0.98 : 0.95)));
       let low = 18;
-      let high = Math.floor(window.innerHeight * 0.22);
+      let high = Math.floor(window.innerHeight * (window.innerWidth <= 680 ? 0.14 : 0.22));
 
       while (low <= high) {
         const middle = Math.floor((low + high) / 2);
@@ -900,6 +992,24 @@
       }
 
       clockEl.style.fontSize = `${Math.max(18, high)}px`;
+    }
+
+    async function enterFullscreen() {
+      document.body.classList.add("immersive");
+      window.scrollTo(0, 1);
+
+      const root = document.documentElement;
+      try {
+        if (root.requestFullscreen) {
+          await root.requestFullscreen();
+        } else if (root.webkitRequestFullscreen) {
+          root.webkitRequestFullscreen();
+        }
+      } catch (error) {
+        // iOS Safari may reject fullscreen for normal web pages; immersive layout still helps.
+      }
+
+      fitMomentText();
     }
 
     function render() {
@@ -956,6 +1066,8 @@
       startX = null;
     }, { passive: true });
     window.addEventListener("resize", fitMomentText);
+    window.addEventListener("orientationchange", () => window.setTimeout(fitMomentText, 300));
+    fullscreenButtonEl.addEventListener("click", enterFullscreen);
 
     setTheme(0);
     restartThemeTimer();
