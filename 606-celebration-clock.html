@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>2026.06.06 6:6:6</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --panel: rgba(255, 255, 255, 0.08);
+      --line: rgba(255, 255, 255, 0.18);
+      --text: #f6f1e8;
+      --muted: #b9c2cc;
+      --gold: #f3c969;
+      --accent: #5fd0a5;
+      --danger: #ef6f61;
+      --shadow: rgba(0, 0, 0, 0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 2.4vw;
+      padding:
+        max(2.4vw, env(safe-area-inset-top))
+        max(2.4vw, env(safe-area-inset-right))
+        max(2.4vw, env(safe-area-inset-bottom))
+        max(2.4vw, env(safe-area-inset-left));
+      text-align: center;
+    }
+
+    .sky {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .moon {
+      position: absolute;
+      top: max(-330px, -22vw);
+      right: max(-330px, -22vw);
+      width: min(68vw, 68vh);
+      min-width: 470px;
+      max-width: 860px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 27% 26%, rgba(255, 255, 255, 0.92) 0 2.4%, transparent 3.4%),
+        radial-gradient(circle at 41% 31%, rgba(83, 101, 126, 0.25) 0 4.2%, rgba(255, 255, 255, 0.14) 4.8%, transparent 7%),
+        radial-gradient(circle at 56% 42%, rgba(74, 91, 116, 0.24) 0 5.6%, rgba(255, 255, 255, 0.12) 6.3%, transparent 9.2%),
+        radial-gradient(circle at 72% 35%, rgba(86, 103, 127, 0.20) 0 3.8%, transparent 6.2%),
+        radial-gradient(circle at 31% 58%, rgba(63, 80, 106, 0.23) 0 6.8%, rgba(255, 255, 255, 0.10) 7.6%, transparent 11%),
+        radial-gradient(circle at 51% 69%, rgba(82, 99, 124, 0.20) 0 4.4%, transparent 7.4%),
+        radial-gradient(circle at 67% 67%, rgba(48, 65, 91, 0.18) 0 7.6%, transparent 12%),
+        radial-gradient(circle at 78% 55%, rgba(67, 84, 108, 0.20) 0 3.2%, transparent 5.4%),
+        radial-gradient(ellipse at 45% 52%, rgba(107, 123, 146, 0.20), transparent 28%),
+        radial-gradient(ellipse at 65% 44%, rgba(84, 100, 124, 0.16), transparent 24%),
+        radial-gradient(circle at 42% 48%, rgba(255, 255, 255, 0.30), transparent 18%),
+        radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 1), rgba(248, 252, 255, 0.98) 43%, rgba(199, 213, 228, 0.94) 73%),
+        #f9fcff;
+      box-shadow:
+        0 0 58px rgba(255, 255, 255, 0.82),
+        0 0 150px rgba(210, 230, 255, 0.48),
+        inset -78px -66px 110px rgba(69, 86, 111, 0.38),
+        inset 36px 30px 58px rgba(255, 255, 255, 0.42);
+      opacity: 0.96;
+      animation: moonFloat 9s ease-in-out infinite alternate;
+    }
+
+    .moon::before,
+    .moon::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .moon::before {
+      inset: 0;
+      background:
+        radial-gradient(circle at 22% 39%, rgba(55, 72, 98, 0.20) 0 4.6%, rgba(255, 255, 255, 0.10) 5.6%, transparent 8.2%),
+        radial-gradient(circle at 76% 44%, rgba(53, 70, 96, 0.17) 0 4%, transparent 7%),
+        radial-gradient(circle at 58% 20%, rgba(72, 90, 116, 0.16) 0 4.8%, transparent 8%),
+        radial-gradient(circle at 23% 72%, rgba(70, 88, 112, 0.17) 0 4%, transparent 7%),
+        radial-gradient(circle at 72% 76%, rgba(48, 65, 91, 0.15) 0 6%, transparent 10%),
+        radial-gradient(circle at 37% 78%, rgba(52, 69, 94, 0.14) 0 3%, transparent 5.2%),
+        radial-gradient(circle at 83% 25%, rgba(64, 82, 106, 0.13) 0 2.8%, transparent 5%),
+        repeating-radial-gradient(circle at 46% 52%, rgba(70, 86, 108, 0.055) 0 1px, transparent 1px 7px);
+      mix-blend-mode: multiply;
+    }
+
+    .moon::after {
+      inset: 0;
+      background:
+        radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.30), transparent 24%),
+        radial-gradient(ellipse at 57% 62%, rgba(39, 56, 82, 0.16), transparent 34%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 46%, rgba(58, 76, 101, 0.30));
+    }
+
+    .star {
+      position: absolute;
+      width: var(--size);
+      height: var(--size);
+      left: var(--x);
+      top: var(--y);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, var(--alpha));
+      box-shadow: 0 0 calc(var(--size) * 5) rgba(255, 241, 196, 0.82);
+      animation: twinkle var(--duration) ease-in-out infinite alternate;
+      animation-delay: var(--delay);
+    }
+
+    .meteor {
+      position: absolute;
+      top: var(--top);
+      left: var(--left);
+      width: clamp(96px, 15vw, 260px);
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 244, 204, 0.95));
+      box-shadow: 0 0 18px rgba(255, 244, 204, 0.85);
+      opacity: 0;
+      transform: rotate(var(--angle)) translateX(0);
+      animation: meteorFly var(--speed) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .meteor::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff8dc;
+      transform: translateY(-50%);
+      box-shadow: 0 0 20px #fff8dc;
+    }
+
+    body[data-theme="midnight"] {
+      --panel: rgba(255, 255, 255, 0.08);
+      --line: rgba(255, 255, 255, 0.18);
+      --text: #f6f1e8;
+      --muted: #b9c2cc;
+      --gold: #f3c969;
+      --accent: #5fd0a5;
+      --shadow: rgba(0, 0, 0, 0.42);
+      background:
+        radial-gradient(circle at 18% 18%, rgba(95, 208, 165, 0.20), transparent 28%),
+        radial-gradient(circle at 76% 34%, rgba(243, 201, 105, 0.16), transparent 32%),
+        linear-gradient(135deg, #080b10 0%, #111722 56%, #16120d 100%);
+    }
+
+    body[data-theme="champagne"] {
+      --panel: rgba(255, 235, 179, 0.10);
+      --line: rgba(255, 224, 151, 0.24);
+      --text: #fff6df;
+      --muted: #d6bf85;
+      --gold: #ffd36b;
+      --accent: #e7785e;
+      --shadow: rgba(0, 0, 0, 0.52);
+      background:
+        radial-gradient(circle at 18% 24%, rgba(255, 211, 107, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 72%, rgba(231, 120, 94, 0.16), transparent 28%),
+        linear-gradient(135deg, #090705 0%, #24190d 58%, #0e0907 100%);
+    }
+
+    body[data-theme="studio"] {
+      --panel: rgba(14, 20, 22, 0.42);
+      --line: rgba(164, 220, 210, 0.26);
+      --text: #e9fff8;
+      --muted: #a6c6bd;
+      --gold: #ffdc7b;
+      --accent: #5cc7d6;
+      --shadow: rgba(0, 0, 0, 0.54);
+      background:
+        linear-gradient(90deg, rgba(255, 220, 123, 0.14) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 220, 123, 0.12) 1px, transparent 1px),
+        linear-gradient(135deg, #071011 0%, #123035 52%, #0b151d 100%);
+      background-size: auto, 44px 44px, auto;
+    }
+
+    body[data-theme="ruby"] {
+      --panel: rgba(255, 255, 255, 0.10);
+      --line: rgba(255, 226, 218, 0.25);
+      --text: #fff3ef;
+      --muted: #ffc6b8;
+      --gold: #ffd46f;
+      --accent: #ff7f67;
+      --shadow: rgba(92, 8, 20, 0.46);
+      background:
+        radial-gradient(circle at 24% 28%, rgba(255, 212, 111, 0.24), transparent 26%),
+        radial-gradient(circle at 78% 72%, rgba(255, 127, 103, 0.25), transparent 30%),
+        linear-gradient(135deg, #2a0612 0%, #751525 54%, #210b18 100%);
+    }
+
+    body[data-theme="aurora"] {
+      --panel: rgba(4, 34, 38, 0.34);
+      --line: rgba(197, 255, 226, 0.24);
+      --text: #effff8;
+      --muted: #b5e9d3;
+      --gold: #fff184;
+      --accent: #6bf1ca;
+      --shadow: rgba(0, 33, 39, 0.52);
+      background:
+        radial-gradient(circle at 16% 68%, rgba(107, 241, 202, 0.28), transparent 26%),
+        radial-gradient(circle at 82% 20%, rgba(122, 161, 255, 0.26), transparent 32%),
+        linear-gradient(135deg, #061114 0%, #0c4b50 48%, #12213f 100%);
+    }
+
+    body[data-theme="porcelain"] {
+      --panel: rgba(218, 243, 255, 0.08);
+      --line: rgba(166, 217, 235, 0.22);
+      --text: #edf9ff;
+      --muted: #a4bdca;
+      --gold: #e0b46b;
+      --accent: #67bed3;
+      --shadow: rgba(0, 0, 0, 0.50);
+      background:
+        linear-gradient(90deg, rgba(103, 190, 211, 0.12) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(224, 180, 107, 0.10) 1px, transparent 1px),
+        linear-gradient(135deg, #050b11 0%, #0d2430 56%, #10100e 100%);
+      background-size: 38px 38px, 38px 38px, auto;
+    }
+
+    body[data-theme="neon"] {
+      --panel: rgba(255, 255, 255, 0.07);
+      --line: rgba(139, 255, 247, 0.30);
+      --text: #f9f7ff;
+      --muted: #b7b0d9;
+      --gold: #f8ff72;
+      --accent: #8bfff7;
+      --shadow: rgba(0, 0, 0, 0.58);
+      background:
+        linear-gradient(115deg, rgba(139, 255, 247, 0.15) 0 18%, transparent 18% 42%, rgba(248, 255, 114, 0.12) 42% 54%, transparent 54%),
+        linear-gradient(135deg, #08000f 0%, #231047 50%, #050915 100%);
+    }
+
+    body[data-theme="gala"] {
+      --panel: rgba(255, 255, 255, 0.10);
+      --line: rgba(255, 255, 255, 0.20);
+      --text: #fffaf0;
+      --muted: #d8d8e8;
+      --gold: #ffd06a;
+      --accent: #7bbcff;
+      --shadow: rgba(0, 0, 0, 0.50);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(255, 208, 106, 0.30), transparent 30%),
+        linear-gradient(90deg, rgba(123, 188, 255, 0.16), transparent 34%, rgba(255, 208, 106, 0.16)),
+        linear-gradient(135deg, #080916 0%, #1e203e 50%, #07080d 100%);
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: min(780px, 92vh);
+      min-height: min(780px, 92dvh);
+      display: grid;
+      grid-template-rows: repeat(4, auto);
+      align-content: space-evenly;
+      justify-items: center;
+      gap: clamp(12px, 2vh, 28px);
+      opacity: 1;
+    }
+
+    .headline {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(64px, 9.6vw, 166px);
+      font-weight: 880;
+      line-height: 1;
+      letter-spacing: 0;
+      text-shadow: 0 14px 58px var(--shadow);
+      text-align: center;
+    }
+
+    .moment-line {
+      display: block;
+      line-height: 1.35;
+    }
+
+    .current-moment {
+      color: var(--text);
+      font-size: 96px;
+      font-weight: 760;
+      line-height: 1.08;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 10px 42px var(--shadow);
+    }
+
+    .clock {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(54px, 9vw, 132px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      text-shadow: 0 12px 50px var(--shadow);
+    }
+
+    .countdown-title {
+      color: var(--muted);
+      font-size: clamp(34px, 4.6vw, 78px);
+      font-weight: 720;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .highlight {
+      color: var(--gold);
+    }
+
+    .countdown {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: clamp(14px, 2vw, 28px);
+    }
+
+    .unit {
+      min-height: clamp(150px, 18vh, 230px);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 16px 52px var(--shadow);
+      display: grid;
+      place-items: center;
+      padding: clamp(20px, 3vw, 36px) 12px;
+      text-align: center;
+    }
+
+    .number {
+      font-size: clamp(56px, 7.6vw, 124px);
+      font-weight: 760;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+
+    .label {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: clamp(22px, 2.4vw, 38px);
+      text-align: center;
+    }
+
+    .celebrate .current-moment {
+      color: var(--gold);
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+
+    .celebrate .countdown-title {
+      color: var(--gold);
+    }
+
+    .confetti {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .celebrate .confetti {
+      opacity: 1;
+    }
+
+    .piece {
+      position: absolute;
+      top: -12vh;
+      width: 10px;
+      height: 18px;
+      border-radius: 2px;
+      animation: fall linear infinite;
+    }
+
+    .barrage,
+    .fireworks {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .barrage {
+      z-index: 5;
+    }
+
+    .fireworks {
+      z-index: 5;
+    }
+
+    .celebrate .barrage,
+    .celebrate .fireworks {
+      opacity: 1;
+    }
+
+    .danmu {
+      position: absolute;
+      top: var(--top);
+      left: 0;
+      color: var(--gold);
+      font-size: var(--size);
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow:
+        0 0 18px rgba(255, 255, 255, 0.46),
+        0 0 38px rgba(255, 211, 107, 0.70),
+        0 8px 24px rgba(0, 0, 0, 0.36);
+      opacity: 0;
+      transform: translateX(110vw);
+      animation: danmuMove var(--speed) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .firework {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: 8px;
+      height: 8px;
+      animation: fireworkCore var(--speed) ease-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .firework::before,
+    .firework::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: fireworkHalo var(--speed) ease-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .firework::before {
+      width: var(--halo-size);
+      height: var(--halo-size);
+      border: 2px solid var(--halo-color);
+      box-shadow: 0 0 42px var(--halo-color);
+    }
+
+    .firework::after {
+      width: 18px;
+      height: 18px;
+      background: var(--halo-color);
+      box-shadow: 0 0 34px var(--halo-color), 0 0 72px var(--halo-color);
+    }
+
+    .spark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: var(--spark-size);
+      height: var(--spark-size);
+      border-radius: 50%;
+      background: var(--spark-color);
+      box-shadow: 0 0 18px var(--spark-color);
+      transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0);
+      opacity: 0;
+      animation: sparkFly var(--speed) ease-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes pulse {
+      from {
+        text-shadow: 0 14px 60px rgba(243, 201, 105, 0.22);
+      }
+      to {
+        text-shadow: 0 18px 76px rgba(243, 201, 105, 0.58);
+      }
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(125vh) rotate(720deg);
+      }
+    }
+
+    @keyframes twinkle {
+      from {
+        opacity: 0.35;
+        transform: scale(0.82);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1.24);
+      }
+    }
+
+    @keyframes moonFloat {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(12px);
+      }
+    }
+
+    @keyframes meteorFly {
+      0% {
+        opacity: 0;
+        transform: rotate(var(--angle)) translateX(0);
+      }
+      4% {
+        opacity: 1;
+      }
+      26% {
+        opacity: 0;
+        transform: rotate(var(--angle)) translateX(190vw);
+      }
+      100% {
+        opacity: 0;
+        transform: rotate(var(--angle)) translateX(190vw);
+      }
+    }
+
+    @keyframes danmuMove {
+      0% {
+        opacity: 0;
+        transform: translateX(110vw);
+      }
+      8% {
+        opacity: 1;
+      }
+      92% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-38vw);
+      }
+    }
+
+    @keyframes fireworkCore {
+      0%,
+      18%,
+      100% {
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      26% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes fireworkHalo {
+      0%,
+      16% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0);
+      }
+      22% {
+        opacity: 0.95;
+      }
+      62% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @keyframes sparkFly {
+      0%,
+      18% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0) scale(0.4);
+      }
+      22% {
+        opacity: 1;
+      }
+      62% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance)) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance)) scale(1);
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding:
+          max(12px, env(safe-area-inset-top))
+          max(12px, env(safe-area-inset-right))
+          max(12px, env(safe-area-inset-bottom))
+          max(12px, env(safe-area-inset-left));
+      }
+
+      main {
+        min-height: 100vh;
+        min-height: 100dvh;
+        gap: clamp(8px, 1.6dvh, 18px);
+        padding-top: 42px;
+        padding-bottom: 46px;
+      }
+
+      .countdown {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .headline {
+        font-size: clamp(40px, 13.2vw, 78px);
+      }
+
+      .current-moment {
+        font-size: clamp(20px, 6.2vw, 38px);
+      }
+
+      .countdown-title {
+        font-size: clamp(25px, 7vw, 42px);
+      }
+
+      .unit {
+        min-height: clamp(96px, 18dvh, 148px);
+        padding: 14px 8px;
+      }
+
+      .number {
+        font-size: clamp(44px, 14vw, 74px);
+      }
+
+      .label {
+        margin-top: 8px;
+        font-size: clamp(18px, 5vw, 28px);
+      }
+
+      .moon {
+        min-width: 360px;
+        width: 92vw;
+        top: -218px;
+        right: -218px;
+      }
+    }
+
+    @media (max-width: 430px) and (orientation: portrait) {
+      .headline {
+        font-size: clamp(34px, 12.4vw, 58px);
+      }
+
+      .countdown {
+        gap: 10px;
+      }
+
+      .unit {
+        min-height: clamp(82px, 16dvh, 120px);
+      }
+
+      .number {
+        font-size: clamp(38px, 13vw, 62px);
+      }
+
+      .label {
+        font-size: clamp(16px, 4.8vw, 24px);
+      }
+    }
+  </style>
+</head>
+<body data-theme="midnight">
+  <div class="sky" aria-hidden="true" id="sky">
+    <div class="moon"></div>
+  </div>
+  <main aria-live="polite">
+    <h1 class="headline">66大顺&nbsp;&nbsp;&nbsp;万事超6</h1>
+
+    <section class="moment-line">
+      <div id="clock" class="current-moment">----</div>
+    </section>
+
+    <div class="countdown-title">距离人生<span class="highlight">最6时刻</span>还差</div>
+
+    <section class="countdown" aria-label="倒计时">
+      <div class="unit"><div><div id="days" class="number">--</div><div class="label">天</div></div></div>
+      <div class="unit"><div><div id="hours" class="number">--</div><div class="label">小时</div></div></div>
+      <div class="unit"><div><div id="minutes" class="number">--</div><div class="label">分钟</div></div></div>
+      <div class="unit"><div><div id="seconds" class="number">--</div><div class="label">秒</div></div></div>
+    </section>
+  </main>
+
+  <div class="confetti" aria-hidden="true" id="confetti"></div>
+  <div class="fireworks" aria-hidden="true" id="fireworks"></div>
+  <div class="barrage" aria-hidden="true" id="barrage"></div>
+
+  <script>
+    const TEST_MODE = false;
+    const target = TEST_MODE ? new Date(Date.now() - 1000) : new Date(2026, 5, 6, 18, 6, 6);
+    const themes = ["midnight", "champagne", "studio", "ruby", "aurora", "porcelain", "neon", "gala"];
+    let themeIndex = 0;
+    let startX = null;
+    let themeTimer = null;
+    let celebrationStarted = false;
+    const clockEl = document.getElementById("clock");
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
+    const confettiEl = document.getElementById("confetti");
+    const fireworksEl = document.getElementById("fireworks");
+    const barrageEl = document.getElementById("barrage");
+    const skyEl = document.getElementById("sky");
+
+    const colors = ["#f3c969", "#5fd0a5", "#ef6f61", "#7eb6ff", "#f6f1e8"];
+    for (let i = 0; i < 84; i += 1) {
+      const piece = document.createElement("span");
+      piece.className = "piece";
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.background = colors[i % colors.length];
+      piece.style.animationDelay = `${Math.random() * 4}s`;
+      piece.style.animationDuration = `${4 + Math.random() * 3}s`;
+      confettiEl.appendChild(piece);
+    }
+
+    for (let i = 0; i < 128; i += 1) {
+      const star = document.createElement("span");
+      const size = 1 + Math.random() * 3.6;
+      star.className = "star";
+      star.style.setProperty("--size", `${size}px`);
+      star.style.setProperty("--x", `${Math.random() * 100}%`);
+      star.style.setProperty("--y", `${Math.random() * 100}%`);
+      star.style.setProperty("--alpha", `${0.38 + Math.random() * 0.58}`);
+      star.style.setProperty("--duration", `${1.8 + Math.random() * 3.8}s`);
+      star.style.setProperty("--delay", `${Math.random() * 4}s`);
+      skyEl.appendChild(star);
+    }
+
+    for (let i = 0; i < 72; i += 1) {
+      const meteor = document.createElement("span");
+      meteor.className = "meteor";
+      meteor.style.setProperty("--top", `${-8 + Math.random() * 116}%`);
+      meteor.style.setProperty("--left", `${-92 + Math.random() * 42}%`);
+      meteor.style.setProperty("--angle", `${-38 + Math.random() * 16}deg`);
+      meteor.style.setProperty("--speed", `${3.8 + Math.random() * 5.2}s`);
+      meteor.style.setProperty("--delay", `${i * 0.16 + Math.random() * 3.6}s`);
+      skyEl.appendChild(meteor);
+    }
+
+    function startCelebration() {
+      if (celebrationStarted) return;
+      celebrationStarted = true;
+      document.body.classList.add("celebrate");
+
+      for (let i = 0; i < 96; i += 1) {
+        const danmu = document.createElement("span");
+        danmu.className = "danmu";
+        danmu.textContent = i % 5 === 0 ? "666 666 666" : "666";
+        danmu.style.setProperty("--top", `${Math.random() * 94}%`);
+        danmu.style.setProperty("--size", `${32 + Math.random() * 54}px`);
+        danmu.style.setProperty("--speed", `${7 + Math.random() * 7}s`);
+        danmu.style.setProperty("--delay", `${Math.random() * 8}s`);
+        barrageEl.appendChild(danmu);
+      }
+
+      const sparkColors = ["#fff5b8", "#ffd36b", "#ff7867", "#7df5ff", "#9effb9", "#f4f1ff"];
+      for (let i = 0; i < 120; i += 1) {
+        const firework = document.createElement("span");
+        const speed = 2.4 + Math.random() * 2.8;
+        const delay = Math.random() * 8;
+        const haloColor = sparkColors[i % sparkColors.length];
+        firework.className = "firework";
+        firework.style.setProperty("--x", `${2 + Math.random() * 96}%`);
+        firework.style.setProperty("--y", `${2 + Math.random() * 86}%`);
+        firework.style.setProperty("--speed", `${speed}s`);
+        firework.style.setProperty("--delay", `${delay}s`);
+        firework.style.setProperty("--halo-size", `${80 + Math.random() * 190}px`);
+        firework.style.setProperty("--halo-color", haloColor);
+
+        for (let j = 0; j < 38; j += 1) {
+          const spark = document.createElement("span");
+          spark.className = "spark";
+          spark.style.setProperty("--angle", `${(360 / 38) * j + Math.random() * 8}deg`);
+          spark.style.setProperty("--distance", `${92 + Math.random() * 210}px`);
+          spark.style.setProperty("--spark-size", `${4 + Math.random() * 8}px`);
+          spark.style.setProperty("--spark-color", sparkColors[(i + j) % sparkColors.length]);
+          spark.style.setProperty("--speed", `${speed}s`);
+          spark.style.setProperty("--delay", `${delay}s`);
+          firework.appendChild(spark);
+        }
+
+        fireworksEl.appendChild(firework);
+      }
+    }
+
+    function setTheme(index) {
+      themeIndex = (index + themes.length) % themes.length;
+      document.body.dataset.theme = themes[themeIndex];
+    }
+
+    function moveTheme(direction) {
+      setTheme(themeIndex + direction);
+    }
+
+    function restartThemeTimer() {
+      window.clearInterval(themeTimer);
+      themeTimer = window.setInterval(() => moveTheme(1), 5000);
+    }
+
+    function fitMomentText() {
+      const availableWidth = Math.max(260, Math.floor(window.innerWidth * (window.innerWidth <= 680 ? 0.98 : 0.95)));
+      let low = 18;
+      let high = Math.floor(window.innerHeight * (window.innerWidth <= 680 ? 0.14 : 0.22));
+
+      while (low <= high) {
+        const middle = Math.floor((low + high) / 2);
+        clockEl.style.fontSize = `${middle}px`;
+        if (clockEl.scrollWidth <= availableWidth) {
+          low = middle + 1;
+        } else {
+          high = middle - 1;
+        }
+      }
+
+      clockEl.style.fontSize = `${Math.max(18, high)}px`;
+    }
+
+    function render() {
+      const now = new Date();
+      const remaining = Math.max(0, target - now);
+      const totalSeconds = Math.floor(remaining / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const hour12 = now.getHours() % 12 || 12;
+      const weekday = now.getDay();
+
+      clockEl.textContent = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日周${weekday} ${hour12}点${now.getMinutes()}分${now.getSeconds()}秒`;
+      fitMomentText();
+      daysEl.textContent = days;
+      hoursEl.textContent = hours;
+      minutesEl.textContent = minutes;
+      secondsEl.textContent = seconds;
+
+      if (remaining === 0) {
+        startCelebration();
+      }
+    }
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        moveTheme(-1);
+        restartThemeTimer();
+      }
+      if (event.key === "ArrowRight") {
+        moveTheme(1);
+        restartThemeTimer();
+      }
+    });
+    window.addEventListener("touchstart", (event) => {
+      startX = event.touches[0].clientX;
+    }, { passive: true });
+    window.addEventListener("touchend", (event) => {
+      if (startX === null) return;
+      const distance = event.changedTouches[0].clientX - startX;
+      if (Math.abs(distance) > 48) {
+        moveTheme(distance < 0 ? 1 : -1);
+        restartThemeTimer();
+      }
+      startX = null;
+    }, { passive: true });
+    window.addEventListener("resize", fitMomentText);
+    window.addEventListener("orientationchange", () => window.setTimeout(fitMomentText, 300));
+
+    setTheme(0);
+    restartThemeTimer();
+    render();
+    setInterval(render, 250);
+  </script>
+</body>
+</html>
