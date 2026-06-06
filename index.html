@@ -721,6 +721,8 @@
     let themeTimer = null;
     let celebrationStarted = false;
     let audioUnlocked = false;
+    let musicStarted = false;
+    let musicPending = false;
     let audioContext = null;
     const clockEl = document.getElementById("clock");
     const daysEl = document.getElementById("days");
@@ -776,6 +778,9 @@
       if (audioContext.state === "suspended") {
         audioContext.resume();
       }
+      if (musicPending || celebrationStarted) {
+        playCelebrationMusic();
+      }
     }
 
     function playFallbackCelebrationSound() {
@@ -805,8 +810,9 @@
     }
 
     async function playCelebrationMusic() {
+      if (musicStarted) return;
       if (!audioUnlocked) {
-        playFallbackCelebrationSound();
+        musicPending = true;
         return;
       }
 
@@ -814,7 +820,11 @@
         celebrationMusicEl.currentTime = 0;
         celebrationMusicEl.volume = 1;
         await celebrationMusicEl.play();
+        musicStarted = true;
+        musicPending = false;
       } catch (error) {
+        musicStarted = true;
+        musicPending = false;
         playFallbackCelebrationSound();
       }
     }
