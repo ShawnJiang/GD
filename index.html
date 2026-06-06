@@ -710,6 +710,7 @@
   <div class="confetti" aria-hidden="true" id="confetti"></div>
   <div class="fireworks" aria-hidden="true" id="fireworks"></div>
   <div class="barrage" aria-hidden="true" id="barrage"></div>
+  <audio id="celebrationMusic" preload="auto" src="haoyunlai.mp3"></audio>
 
   <script>
     const TEST_MODE = false;
@@ -719,6 +720,8 @@
     let startX = null;
     let themeTimer = null;
     let celebrationStarted = false;
+    let audioUnlocked = false;
+    let audioContext = null;
     const clockEl = document.getElementById("clock");
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
@@ -728,6 +731,7 @@
     const fireworksEl = document.getElementById("fireworks");
     const barrageEl = document.getElementById("barrage");
     const skyEl = document.getElementById("sky");
+    const celebrationMusicEl = document.getElementById("celebrationMusic");
 
     const colors = ["#f3c969", "#5fd0a5", "#ef6f61", "#7eb6ff", "#f6f1e8"];
     for (let i = 0; i < 84; i += 1) {
@@ -764,10 +768,62 @@
       skyEl.appendChild(meteor);
     }
 
+    function unlockAudio() {
+      audioUnlocked = true;
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+    }
+
+    function playFallbackCelebrationSound() {
+      if (!audioContext) return;
+
+      const master = audioContext.createGain();
+      master.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      master.gain.exponentialRampToValueAtTime(0.24, audioContext.currentTime + 0.08);
+      master.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 5.4);
+      master.connect(audioContext.destination);
+
+      const notes = [523.25, 659.25, 783.99, 1046.5, 987.77, 783.99, 880, 1174.66];
+      for (let i = 0; i < 36; i += 1) {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const start = audioContext.currentTime + i * 0.13;
+        oscillator.type = i % 3 === 0 ? "triangle" : "square";
+        oscillator.frequency.setValueAtTime(notes[i % notes.length], start);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.18, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.18);
+        oscillator.connect(gain);
+        gain.connect(master);
+        oscillator.start(start);
+        oscillator.stop(start + 0.2);
+      }
+    }
+
+    async function playCelebrationMusic() {
+      if (!audioUnlocked) {
+        playFallbackCelebrationSound();
+        return;
+      }
+
+      try {
+        celebrationMusicEl.currentTime = 0;
+        celebrationMusicEl.volume = 1;
+        await celebrationMusicEl.play();
+      } catch (error) {
+        playFallbackCelebrationSound();
+      }
+    }
+
     function startCelebration() {
       if (celebrationStarted) return;
       celebrationStarted = true;
       document.body.classList.add("celebrate");
+      playCelebrationMusic();
 
       for (let i = 0; i < 96; i += 1) {
         const danmu = document.createElement("span");
@@ -876,8 +932,10 @@
       }
     });
     window.addEventListener("touchstart", (event) => {
+      unlockAudio();
       startX = event.touches[0].clientX;
     }, { passive: true });
+    window.addEventListener("pointerdown", unlockAudio, { once: true });
     window.addEventListener("touchend", (event) => {
       if (startX === null) return;
       const distance = event.changedTouches[0].clientX - startX;
